@@ -46,23 +46,22 @@ class NumberBox(tk.Entry):
         self.number = tk.StringVar()
 
 
-    def validate(self, text=''):
-        new_value = self.get()
-        if len(new_value) > 1:
-            pass
-        print("validating")
-
-
 class NineBoxSquare():
 
     def __init__(self, master=None, row=0, column=0):
         self.frame = tk.Frame(master, bd=4)
         self.frame['relief'] = 'sunken'
         self.number = []
+        self.string = []
         for r in range(1, 4):
             for c in range(1, 4):
-                number_box = NumberBox(self.frame, width=3, justify='center', font=("Purisa", 16))
+                self.string.append(tk.StringVar())
+                self.string[-1].trace('w', lambda nm, idx, mode, var=self.string[-1]: self.validate(var))
+                number_box = NumberBox(self.frame, width=3, justify='center', font=("Purisa", 16), textvariable=self.string[-1])
                 number_box.grid(row=r, column=c)
                 self.number.append(number_box)
-                vcmd = (self.register(self.number[-1].validate))
         self.frame.grid(row=row, column=column)
+
+    def validate(self, text=''):
+
+        print("validating")
