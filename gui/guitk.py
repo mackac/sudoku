@@ -44,6 +44,8 @@ class NumberBox(tk.Entry):
 
         super().__init__(master, cnf, **kw)
         self.number = tk.StringVar()
+        self.string = tk.StringVar()
+        self.old_string = ''
 
 
 class NineBoxSquare():
@@ -62,6 +64,7 @@ class NineBoxSquare():
                 self.number.append(number_box)
         self.frame.grid(row=row, column=column)
 
-    def validate(self, text=''):
-
+    def validate(self, text):
+        abc = tk.StringVar()
+        print(text.get())
         print("validating")
