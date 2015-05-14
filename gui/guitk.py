@@ -12,9 +12,6 @@ class Application(tk.Frame):
         self.createWidgets()
 
     def createWidgets(self):
-        self.hi_there = tk.Button(self)
-        self.hi_there["text"] = "SOLVE"
-        self.hi_there.grid(row=1, column=1)
 
         self.QUIT = tk.Button(self, text="QUIT", fg="red", command=self.master.quit)
         self.QUIT.grid(row=1, column=2)
@@ -41,11 +38,28 @@ class NumberBox(tk.Entry):
     ALLOWED_CHARS = "123456789"
 
     def __init__(self, master=None, cnf={}, **kw):
-
         super().__init__(master, cnf, **kw)
-        self.number = tk.StringVar()
-        self.string = tk.StringVar()
         self.old_string = ''
+        self.number = tk.StringVar()
+        self["textvariable"] = self.number
+        self.number.trace('w', lambda nm, idx, mode, var=self.number: self.validate(var))
+
+    def get_old_string(self):
+        return self.old_string
+
+    def validate(self, text):
+        if len(text.get()) == 0:
+            self.old_string = text.get()
+        elif len(text.get()) == 1:
+            if text.get() in self.ALLOWED_CHARS:
+                self.old_string = text.get()
+            else:
+                text.set(self.old_string)
+        else:
+            text.set(self.old_string)
+
+        print(text.get())
+        print("validating")
 
 
 class NineBoxSquare():
@@ -54,17 +68,9 @@ class NineBoxSquare():
         self.frame = tk.Frame(master, bd=4)
         self.frame['relief'] = 'sunken'
         self.number = []
-        self.string = []
         for r in range(1, 4):
             for c in range(1, 4):
-                self.string.append(tk.StringVar())
-                self.string[-1].trace('w', lambda nm, idx, mode, var=self.string[-1]: self.validate(var))
-                number_box = NumberBox(self.frame, width=3, justify='center', font=("Purisa", 16), textvariable=self.string[-1])
+                number_box = NumberBox(self.frame, width=3, justify='center', font=("Purisa", 16))
                 number_box.grid(row=r, column=c)
                 self.number.append(number_box)
         self.frame.grid(row=row, column=column)
-
-    def validate(self, text):
-        abc = tk.StringVar()
-        print(text.get())
-        print("validating")
