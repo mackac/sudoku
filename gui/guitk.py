@@ -43,6 +43,11 @@ class NumberBox(tk.Entry):
         self.number = tk.StringVar()
         self["textvariable"] = self.number
         self.number.trace('w', lambda nm, idx, mode, var=self.number: self.validate(var))
+        self.create_popup_menu()
+        self.bind("<Button-3>", self.popup)
+
+    def popup(self, event):
+        self.aMenu.post(event.x_root, event.y_root)
 
     def get_old_string(self):
         return self.old_string
@@ -58,8 +63,16 @@ class NumberBox(tk.Entry):
         else:
             text.set(self.old_string)
 
-        print(text.get())
-        print("validating")
+    def get_number(self):
+        return int(self.number.get())
+
+    @staticmethod
+    def hello():
+        print("hello!")
+
+    def create_popup_menu(self):
+        self.aMenu = tk.Menu(self, tearoff=0)
+        self.aMenu.add_command(label="Undo", command=self.hello)
 
 
 class NineBoxSquare():
