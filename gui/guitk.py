@@ -1,8 +1,12 @@
 import tkinter as tk
+import algorithm.sudokuAlgorithm
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
+SQUARE_SIZE = 3
+SQUARE_OF_SQUARE_SIZE = 3
 
+sudoku_algorithm = algorithm.sudokuAlgorithm.SudokuAlgorithm(algorithm.sudokuAlgorithm.DEFAULT)
 
 class Application(tk.Frame):
 
@@ -13,16 +17,24 @@ class Application(tk.Frame):
 
     def createWidgets(self):
 
+        self.update_button = tk.Button(self, text="Update", fg="black", command=self.update)
+        self.update_button.grid(row=1, column=1)
+
         self.QUIT = tk.Button(self, text="QUIT", fg="red", command=self.master.quit)
         self.QUIT.grid(row=1, column=2)
 
-        self.nine_square = []
-        for r in range(2, 5):
-            for c in range(1, 4):
-                self.nine_square.append(NineBoxSquare(self, r, c))
+        self.nine_square = list()
+        for r in range(0, SQUARE_SIZE):
+            self.nine_square.append([])
+            for c in range(0, SQUARE_SIZE):
+                self.nine_square[r].append(NineBoxSquare(self, r+2, c+1))
+
+    def update(self):
+        print("Updating")
+        print(self.nine_square[0][0].get_value(0, 0))
 
 
-class MainWindow():
+class MainWindow:
 
     def __init__(self):
         #self.root = tk.Tk()
@@ -64,7 +76,7 @@ class NumberBox(tk.Entry):
             text.set(self.old_string)
 
     def get_number(self):
-        return int(self.number.get())
+        return self.number.get()
 
     @staticmethod
     def hello():
@@ -80,10 +92,15 @@ class NineBoxSquare():
     def __init__(self, master=None, row=0, column=0):
         self.frame = tk.Frame(master, bd=4)
         self.frame['relief'] = 'sunken'
-        self.number = []
-        for r in range(1, 4):
-            for c in range(1, 4):
+        self.number = list()
+        for r in range(0, SQUARE_OF_SQUARE_SIZE):
+            self.number.append([])
+            for c in range(0, SQUARE_OF_SQUARE_SIZE):
                 number_box = NumberBox(self.frame, width=3, justify='center', font=("Purisa", 16))
-                number_box.grid(row=r, column=c)
-                self.number.append(number_box)
+                number_box.grid(row=r+1, column=c+1)
+                self.number[r].append(number_box)
         self.frame.grid(row=row, column=column)
+
+    def get_value(self, row=0, column=0):
+        return self.number[row][column].get_number()
+
